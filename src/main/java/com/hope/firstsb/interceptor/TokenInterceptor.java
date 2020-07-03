@@ -1,7 +1,6 @@
 package com.hope.firstsb.interceptor;
 
 import com.hope.firstsb.annotation.IgnoreToken;
-import com.hope.firstsb.annotation.Token;
 import com.hope.firstsb.exception.BizException;
 import com.hope.firstsb.support.ResponseCode;
 import com.hope.firstsb.util.JwtUtil;
@@ -52,6 +51,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             throw new BizException(ResponseCode.UNAUTHORIZED.getCode(), ResponseCode.UNAUTHORIZED.getMsg());
         }
 
+        // 验证token
         if (!JwtUtil.verifyToken(token)) {
             throw new BizException(ResponseCode.UNAUTHORIZED.getCode(), ResponseCode.UNAUTHORIZED.getMsg());
         }
