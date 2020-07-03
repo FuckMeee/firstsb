@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Date;
@@ -12,6 +11,7 @@ import java.util.Map;
 
 public class JwtUtil {
 
+    // 创建
     public static String createToken(Map<String, String> map) {
         Algorithm algorithm = Algorithm.HMAC256("secret");
         String token = JWT.create().withIssuer("auth0")
@@ -21,6 +21,7 @@ public class JwtUtil {
         return token;
     }
 
+    // 验证
     public static boolean verifyToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
@@ -38,23 +39,19 @@ public class JwtUtil {
         }
     }
 
-    public static void decodeToken(String token) {
-        DecodedJWT jwt = JWT.decode(token);
+    // 解码
+    public static DecodedJWT decodeToken(String token) {
+        return JWT.decode(token);
+    }
 
-        String algorithm = jwt.getAlgorithm(); //获取算法类型
-        String type = jwt.getType();    //获取token类型
-        String issuer = jwt.getIssuer();    //获取token发布者
-        Date expiresAt = jwt.getExpiresAt(); //获取token过期时间
-        Date issuedAt = jwt.getIssuedAt();  // 获取token生产日期
-        Map map = jwt.getClaim("userInfo").asMap();  // 获取token生产日
+    // 获取用户信息
+    public static Map<String, Object> getUserInfo(String token) {
+        return decodeToken(token).getClaim("userInfo").asMap();
+    }
 
-
-        System.out.println(algorithm);  //=>    HS256
-        System.out.println(type);       //=>    JWT
-        System.out.println(issuer);     //=>    auth0
-        System.out.println(expiresAt);  //=>    Sat Jan 11 22:25:13 CST 2020
-        System.out.println(issuedAt);   //=>    Sat Jan 11 20:25:13 CST 2020
-        System.out.println(map);
+    // 获取用户信息
+    public static String getUserInfoByKey(String token, String key) {
+        return (String) getUserInfo(token).get(key);
     }
 
 }
