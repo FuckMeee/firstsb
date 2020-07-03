@@ -3,7 +3,7 @@ package com.hope.firstsb.controller;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hope.firstsb.annotation.Token;
+import com.hope.firstsb.annotation.IgnoreToken;
 import com.hope.firstsb.domain.po.User;
 import com.hope.firstsb.exception.BizException;
 import com.hope.firstsb.service.UserService;
@@ -31,7 +31,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/test")
 @Validated
-@Token
 public class TestController extends BaseController {
     //    @Autowired
     private UserService userService;
@@ -52,6 +51,7 @@ public class TestController extends BaseController {
 //    }
 
     @GetMapping("/test")
+    @IgnoreToken
     public String test() {
 //        StringBuilder str = new StringBuilder();
 //        for (ResponseCode code : ResponseCode.values()) {

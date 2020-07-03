@@ -1,11 +1,19 @@
 package com.hope.firstsb.interceptor;
 
+import com.hope.firstsb.annotation.IgnoreToken;
+import com.hope.firstsb.annotation.Token;
+import com.hope.firstsb.exception.BizException;
+import com.hope.firstsb.support.ResponseCode;
+import com.hope.firstsb.util.JwtUtil;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
  * @author zwh
@@ -22,10 +30,33 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         System.out.println("开始拦截.........");
-        // 业务代码
+
+        if(!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+        // 转成HandlerMethod
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        // 获取“方法”
+        Method method = handlerMethod.getMethod();
+        // 判断该方法上是否有注解
+        if (method.isAnnotationPresent(IgnoreToken.class)) {
+            IgnoreToken ignoreToken = method.getAnnotation(IgnoreToken.class);
+            if (ignoreToken.required()) {
+                return true;
+            }
+        }
+        // 没有注解或者注解返回不为true，则开始验证token
+        // 从header中取出token
         String token = request.getHeader("token");
-        // TODO
-        return false;
+        if (StringUtils.isEmpty(token)) {
+            throw new BizException(ResponseCode.UNAUTHORIZED.getCode(), ResponseCode.UNAUTHORIZED.getMsg());
+        }
+
+        if (!JwtUtil.verifyToken(token)) {
+            throw new BizException(ResponseCode.UNAUTHORIZED.getCode(), ResponseCode.UNAUTHORIZED.getMsg());
+        }
+
+        return true;
     }
 
     /**

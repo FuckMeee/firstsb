@@ -6,9 +6,7 @@ package com.hope.firstsb.support;
 public enum ResponseCode {
     SUCCESS(0, "成功"),
     FAIL(1, "失败"),
-    UNAUTHORIZED(11, "未授权"),
-    FORBIDDEN(12, "没有权限"),
-    UNSUBSCRIBE(13, "未关注");
+    UNAUTHORIZED(1001, "请先认证");
 
 
     private final int code;
