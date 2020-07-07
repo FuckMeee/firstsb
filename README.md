@@ -1,7 +1,7 @@
 # FIRSTSB
 
 #### 介绍
-基于springboot的javaweb服务端基础框架搭建。
+基于springboot的java服务端基础框架搭建。
 仅供自己学习之用
 
 1. lombok （pom.xml 依赖；idea lombak插件）https://blog.csdn.net/ThinkWon/article/details/101392808
@@ -16,7 +16,7 @@
 10. 数据验证（一般注解和自定义注解）验证不通过会抛出异常，在GlobalExceptionHandler处理之后返回给客户端
 11. http请求（RestTemplate，HttpClient）
 12. Thymeleaf接入
-13. RabbitMQ消息中间件接入 *待完成*
+13. RabbitMQ消息中间件接入(延迟消息需要 rabbitmq_delayed_message_exchange 插件，并启动该插件)
 14. Shiro安全框架接入 *待完成*
 15. 拦截器 
 16. JWT

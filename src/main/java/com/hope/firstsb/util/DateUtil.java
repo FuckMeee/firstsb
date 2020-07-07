@@ -23,22 +23,32 @@ public class DateUtil {
      */
     public static final String DATE = "yyyy-MM-dd";
     /**
-     * 例如:2018-12-28 10:00:00
+     * 例如:2018-12-28 10:10:10
      */
     public static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
     /**
-     * 例如:10:00:00
+     * 例如:10:10:10
      */
-    public static final String TIME = "HHmmss";
+    public static final String TIME = "HH:mm:ss";
     /**
-     * 例如:10:00
+     * 例如:10:10
      */
     public static final String TIME_WITHOUT_SECOND = "HH:mm";
 
     /**
-     * 例如:2018-12-28 10:00
+     * 例如:2018-12-28 10:10
      */
     public static final String DATE_TIME_WITHOUT_SECONDS = "yyyy-MM-dd HH:mm";
+
+    /**
+     * 例如:20181228
+     */
+    public static final String DATE_WITHOUT_COLON = "yyyyMMdd";
+
+    /**
+     * 例如:20181228101010
+     */
+    public static final String DATE_TIME_WITHOUT_COLON = "yyyyMMddHHmmss";
 
 
     /**

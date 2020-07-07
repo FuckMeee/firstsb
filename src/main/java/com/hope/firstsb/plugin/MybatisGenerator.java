@@ -17,7 +17,7 @@ import java.util.List;
 public class MybatisGenerator {
 
     public static void main(String[] args) throws Exception {
-        String today = "2020-01-09";
+        String today = "2020-07-07";
         long timeEx = 1000 * 60 * 60 * 24;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

@@ -4,13 +4,21 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hope.firstsb.annotation.IgnoreToken;
+import com.hope.firstsb.config.RabbitMqConfig;
+import com.hope.firstsb.domain.po.Order;
 import com.hope.firstsb.domain.po.User;
 import com.hope.firstsb.exception.BizException;
+import com.hope.firstsb.mq.producer.Producer03;
+import com.hope.firstsb.service.OrderService;
 import com.hope.firstsb.service.UserService;
 import com.hope.firstsb.support.Response;
 import com.hope.firstsb.support.ResponseCode;
+import com.hope.firstsb.util.CustomUtil;
+import com.hope.firstsb.util.DateUtil;
 import com.hope.firstsb.util.RedisUtil;
 import com.hope.firstsb.validate.PhoneNumber;
+import com.sun.org.apache.xpath.internal.operations.Or;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,16 +43,24 @@ import java.util.Map;
 public class TestController extends BaseController {
     //    @Autowired
     private UserService userService;
+    private OrderService orderService;
     //    @Autowired
     private RedisUtil redisUtil;
 
     private RestTemplate restTemplate;
 
+    private RabbitTemplate rabbitTemplate;
+
+    @Resource
+    private Producer03 producer03;
+
     @Autowired
-    public TestController(UserService userService, RedisUtil redisUtil, RestTemplate restTemplate) {
+    public TestController(UserService userService, OrderService orderService, RedisUtil redisUtil, RestTemplate restTemplate, RabbitTemplate rabbitTemplate) {
         this.userService = userService;
+        this.orderService = orderService;
         this.redisUtil = redisUtil;
         this.restTemplate = restTemplate;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
 //    public TestController() {
@@ -162,13 +179,13 @@ public class TestController extends BaseController {
     }
 
     @GetMapping("/resttemp")
-    public Response teset14() {
+    public Response test14() {
         System.out.println("333");
         return Response.success().addData(restTemplate.getForObject("http://localhost:8080/test/redis2", Object.class));
     }
 
     @GetMapping("/fastjson")
-    public Response teset15() {
+    public Response test15() {
         User user = new User();
         user.setUsername("111");
         user.setPassword("222");
@@ -180,7 +197,7 @@ public class TestController extends BaseController {
     }
 
     @GetMapping("/thymeleaf")
-    public String teset16(Model model) {
+    public String test16(Model model) {
         User user = new User();
         user.setUsername("111");
         user.setPassword("222");
@@ -190,6 +207,30 @@ public class TestController extends BaseController {
         model.addAttribute("user", user);
         return "user";
     }
+
+    @GetMapping("/rabbitmq")
+    @IgnoreToken
+    public void test17() {
+//        producer03.send();
+    }
+
+    @GetMapping("/order")
+    @IgnoreToken
+    public Response test18() {
+        String tradeNo = CustomUtil.createTradeNo();
+        Order order = new Order();
+        order.setTradeNo(tradeNo);
+        order.setStatus(0);
+        order.setCreateTime((int)System.currentTimeMillis()/1000);
+        int res = orderService.createOrder(order);
+        producer03.send(tradeNo);
+        if (res > 0) {
+            return Response.success();
+        }
+        return Response.fail();
+    }
+
+
 
     private void aaa() {
         bbb();
@@ -202,4 +243,5 @@ public class TestController extends BaseController {
     private void ccc() {
         int a = 10 / 0;
     }
+
 }
